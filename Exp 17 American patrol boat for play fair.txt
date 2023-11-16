@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+
+#define SIZE 5
+void findPosition(char matrix[SIZE][SIZE], char ch, int *row, int *col) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (matrix[i][j] == ch) {
+                *row = i;
+                *col = j;
+                return;
+            }
+        }
+    }
+}
+void decryptPlayfair(char matrix[SIZE][SIZE], char cipher[], char plaintext[]) {
+    int len = strlen(cipher);
+    int i = 0;
+    int row1, col1, row2, col2;
+
+    while (i < len) {
+        findPosition(matrix, cipher[i], &row1, &col1);
+        findPosition(matrix, cipher[i + 1], &row2, &col2);
+
+        if (row1 == row2) {
+            col1 = (col1 - 1 + SIZE) % SIZE;
+            col2 = (col2 - 1 + SIZE) % SIZE;
+        } else if (col1 == col2) {
+            row1 = (row1 - 1 + SIZE) % SIZE;
+            row2 = (row2 - 1 + SIZE) % SIZE;
+        } else {
+            int temp = col1;
+            col1 = col2;
+            col2 = temp;
+        }
+
+        plaintext[i / 2] = matrix[row1][col1];
+        plaintext[i / 2 + 1] = matrix[row2][col2];
+
+        i += 2;
+    }
+    plaintext[i / 2] = '\0';
+}
+
+int main() {
+    char key[] = "PT109";
+    char matrix[SIZE][SIZE];
+    char cipher[] = "KXJEYUREBEZWEHEWRYTUHEYFSKREHEGOYFIWTTTUOLKSYCAJPOBOTEIZONTXBYBNTGONEYCUZWRGDSONSXBOUYWRHEBAAHYUSEDQ";
+    char plaintext[1000];
+    int k = 0;
+    int used[26] = {0}; 
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            while (used[key[k] - 'A']) {
+                k = (k + 1) % strlen(key);
+            }
+            matrix[i][j] = key[k];
+            used[key[k] - 'A'] = 1;
+            k = (k + 1) % strlen(key);
+        }
+    }
+
+    decryptPlayfair(matrix, cipher, plaintext);
+    printf("Decoded Message: %s\n", plaintext);
+
+    return 0;
+}
