@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES Encryption and Decryption</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <script>
+    // DES encryption using crypto-js library in a browser
+    function desEncrypt(input, key) {
+      const encryptedData = CryptoJS.DES.encrypt(input, key).toString();
+      return encryptedData;
+    }
+
+    // DES decryption using crypto-js library in a browser
+    function desDecrypt(input, key) {
+      const decryptedData = CryptoJS.DES.decrypt(input, key).toString(CryptoJS.enc.Utf8);
+      return decryptedData;
+    }
+
+    const plaintext = 'Hello, DES!';
+    const key = 'ThisIs64BitKey';
+    const encryptedText = desEncrypt(plaintext, key);
+    console.log('Encrypted:', encryptedText);
+    console.log('Decrypted:', desDecrypt(encryptedText, key));
+  </script>
+</body>
+</html>
